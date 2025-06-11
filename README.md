@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Video Ad Generator
 
-## Getting Started
+A full-stack application that generates video ads from product URLs using AI. Built with Next.js, TypeScript, and modern AI tools.
 
-First, run the development server:
+## Features
 
+- Scrape product information from Amazon and Shopify URLs
+- Generate compelling ad scripts using GPT-4
+- Create professional video ads using Remotion
+- Modern UI with ShadcnUI and TailwindCSS
+- Real-time progress tracking
+- Video preview and download
+
+## Prerequisites
+
+- Node.js 18+ and npm
+- OpenAI API key
+- Chrome/Chromium (for Puppeteer)
+
+## Setup
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd <repository-name>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Create a `.env.local` file in the root directory:
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Enter a product URL from Amazon or Shopify
+2. Wait for the product information to be scraped
+3. Review the generated ad script
+4. Generate and preview the video
+5. Download the final video
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- **Frontend**:
+  - Next.js 14 (App Router)
+  - TypeScript
+  - TailwindCSS
+  - ShadcnUI
+  - Zustand
+  - React Query
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Backend**:
+  - Next.js API Routes
+  - Puppeteer
+  - OpenAI GPT-4
+  - Remotion
+  - Node File System
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+/app
+├── page.tsx                 # Home page
+└── api/
+    ├── scrape/             # Product scraping endpoint
+    ├── generate-script/    # OpenAI script generation
+    └── generate-video/     # Remotion video generation
+
+/components
+├── UrlInputForm.tsx        # URL input form
+├── ProductPreview.tsx      # Shows scraped info
+├── ScriptPreview.tsx      # Shows generated script
+├── VideoPlayer.tsx        # Video preview
+├── Loader.tsx            # Loading states
+└── Stepper.tsx          # Progress indicator
+
+/lib
+├── store.ts             # Zustand store
+└── utils.ts            # Utility functions
+
+/public/videos          # Generated video storage
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## License
+
+MIT
