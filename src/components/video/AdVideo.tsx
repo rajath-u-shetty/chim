@@ -1,83 +1,126 @@
-import { AbsoluteFill, Sequence, useCurrentFrame, interpolate, Composition } from 'remotion';
+import { AbsoluteFill, Sequence, useCurrentFrame, interpolate, Img } from 'remotion';
 import React from 'react';
+import { Product } from '@/types/product';
 
 interface AdVideoProps {
   script: string;
+  product: Product;
 }
 
 const TextSection: React.FC<{
-  visual: string;
-  voiceover: string;
+  text: string;
+  image: string;
   style?: React.CSSProperties;
-}> = ({ visual, voiceover, style }) => {
+}> = ({ text, image, style }) => {
+  const frame = useCurrentFrame();
+  
+  // Image animation - single smooth scale animation
+  const imageScale = interpolate(
+    frame,
+    [0, 15, 75, 90],
+    [0.95, 1, 1, 0.95],
+    {
+      extrapolateRight: 'clamp',
+    }
+  );
+
+  // Text animation
+  const textOpacity = interpolate(
+    frame,
+    [0, 15, 75, 90],
+    [0, 1, 1, 0],
+    {
+      extrapolateRight: 'clamp',
+    }
+  );
+
   return (
     <AbsoluteFill
       style={{
         ...style,
-        padding: 40,
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
+        flexDirection: 'row',
         alignItems: 'center',
-        textAlign: 'center',
-        fontFamily: 'system-ui',
         backgroundColor: 'white',
+        padding: '40px',
       }}
     >
-      <h1
+      {/* Left side - Image */}
+      <div
         style={{
-          fontSize: 48,
-          fontWeight: 'bold',
-          marginBottom: 20,
-          color: '#1a1a1a',
+          flex: '1',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transform: `scale(${imageScale})`,
+          transition: 'transform 0.3s ease-in-out',
         }}
       >
-        {visual}
-      </h1>
-      <p
+        <Img
+          src={image}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            maxWidth: '1200px',
+            maxHeight: '1200px',
+            imageRendering: '-webkit-optimize-contrast',
+            WebkitFontSmoothing: 'antialiased'
+          }}
+        />
+      </div>
+
+      {/* Right side - Text */}
+      <div
         style={{
-          fontSize: 24,
-          color: '#4a4a4a',
-          maxWidth: 800,
-          lineHeight: 1.5,
+          flex: '1',
+          padding: '40px',
+          opacity: textOpacity,
+          transition: 'opacity 0.3s ease-in-out',
         }}
       >
-        {voiceover}
-      </p>
+        <h1
+          style={{
+            fontSize: 48,
+            fontWeight: 'bold',
+            color: '#1a1a1a',
+            lineHeight: 1.2,
+          }}
+        >
+          {text}
+        </h1>
+      </div>
     </AbsoluteFill>
   );
 };
 
-export const AdVideo: React.FC<AdVideoProps> = ({ script }) => {
-  const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [0, 30], [0, 1], {
-    extrapolateRight: 'clamp',
-  });
-
-  // Split script into sections (assuming format: "VISUAL: ... VO: ...")
+export const AdVideo: React.FC<AdVideoProps> = ({ script, product }) => {
+  // Filter out 360 view images and get all available images
+  const allImages = [product.image, ...product.images].filter(img => 
+    !img.includes('360') && !img.toLowerCase().includes('spin')
+  );
+  
   const sections = script
     .split('\n\n')
     .filter(Boolean)
     .map((section) => {
-      const [visual, voiceover] = section.split('\nVO: ');
-      return {
-        visual: visual.replace('VISUAL: ', '').trim(),
-        voiceover: voiceover?.trim() || '',
-      };
+      const visual = section.split('\nVO:')[0].replace('VISUAL:', '').trim();
+      return visual;
     });
 
   return (
     <AbsoluteFill style={{ backgroundColor: 'white' }}>
-      {sections.map((section, index) => (
+      {sections.map((text, index) => (
         <Sequence
           key={index}
           from={index * 90} // 3 seconds per section
           durationInFrames={90}
         >
           <TextSection
-            visual={section.visual}
-            voiceover={section.voiceover}
-            style={{ opacity }}
+            text={text}
+            image={allImages[index % allImages.length]} // Cycle through available images
+            style={{ opacity: 1 }}
           />
         </Sequence>
       ))}

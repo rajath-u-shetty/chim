@@ -5,9 +5,9 @@ import { Player } from '@remotion/player';
 import { AdVideo } from './video/AdVideo';
 
 export function VideoPlayer() {
-  const { videoUrl, script } = useStore();
+  const { videoUrl, script, product } = useStore();
 
-  if (!videoUrl || !script) return null;
+  if (!videoUrl || !script || !product) return null;
 
   const handleDownload = () => {
     // For now, we'll just download the rendered preview
@@ -36,9 +36,14 @@ export function VideoPlayer() {
             style={{
               width: '100%',
               height: '100%',
+              maxWidth: '100%',
+              maxHeight: 'calc(100vh - 300px)',
+              imageRendering: '-webkit-optimize-contrast',
+              WebkitFontSmoothing: 'antialiased'
             }}
             inputProps={{
               script,
+              product,
             }}
             controls
           />

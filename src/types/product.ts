@@ -3,6 +3,7 @@ export type Step = 'url' | 'product' | 'script' | 'video';
 export interface Product {
   title: string;
   image: string;
+  images: string[];  // Array of additional product images
   price?: string;
   description: string;
   features: string[];

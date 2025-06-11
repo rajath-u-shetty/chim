@@ -40,12 +40,18 @@ export function ProductPreview() {
         <CardTitle>Product Details</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="relative w-full h-64">
+        <div className="relative w-full h-[400px]">
           <Image
-            src={product.image}
+            src={product.image.includes('360') || product.image.toLowerCase().includes('spin') 
+              ? (product.images.find(img => !img.includes('360') && !img.toLowerCase().includes('spin')) || product.image)
+              : product.image}
             alt={product.title}
             fill
             className="object-contain"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+            quality={100}
+            unoptimized
           />
         </div>
         <div className="space-y-2">

@@ -5,9 +5,9 @@ import { Player } from '@remotion/player';
 import { AdVideo } from './video/AdVideo';
 
 export function ScriptPreview() {
-  const { script, setLoading, setError, setVideo, setStep } = useStore();
+  const { script, product, setLoading, setError, setVideo, setStep } = useStore();
 
-  if (!script) return null;
+  if (!script || !product) return null;
 
   const handleGenerateVideo = async () => {
     setLoading(true);
@@ -55,9 +55,14 @@ export function ScriptPreview() {
             style={{
               width: '100%',
               height: '100%',
+              maxWidth: '100%',
+              maxHeight: 'calc(100vh - 400px)',
+              imageRendering: '-webkit-optimize-contrast',
+              WebkitFontSmoothing: 'antialiased'
             }}
             inputProps={{
               script,
+              product,
             }}
           />
         </div>
