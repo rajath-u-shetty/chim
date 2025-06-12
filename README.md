@@ -75,7 +75,8 @@ npm run dev
 └── api/
     ├── scrape/             # Product scraping endpoint
     ├── generate-script/    # OpenAI script generation
-    └── generate-video/     # Remotion video generation
+    ├── generate-video/     # Remotion video generation
+    └── save-video/        # Video download handler
 
 /components
 ├── UrlInputForm.tsx        # URL input form
@@ -90,6 +91,7 @@ npm run dev
 └── utils.ts            # Utility functions
 
 /public/videos          # Generated video storage
+/downloads             # Downloaded video storage
 ```
 
 ## Contributing

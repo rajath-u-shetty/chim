@@ -9,15 +9,45 @@ export function VideoPlayer() {
 
   if (!videoUrl || !script || !product) return null;
 
-  const handleDownload = () => {
-    // For now, we'll just download the rendered preview
-    // In a production environment, you'd want to implement proper video export
-    const link = document.createElement('a');
-    link.href = videoUrl;
-    link.download = 'ad-video.mp4';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    try {
+      // Create a unique filename based on timestamp and product name
+      const timestamp = new Date().getTime();
+      const sanitizedProductName = product.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .substring(0, 50); // Limit length
+      const filename = `${sanitizedProductName}-${timestamp}.mp4`;
+
+      // Fetch the video data
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+
+      // Create a link to download
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up the URL object
+      URL.revokeObjectURL(link.href);
+
+      // Save to downloads directory using the API
+      const formData = new FormData();
+      formData.append('video', blob, filename);
+      
+      await fetch('/api/save-video', {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error) {
+      console.error('Error downloading video:', error);
+    }
   };
 
   return (
